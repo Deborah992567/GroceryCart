@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grocery Bud — Dashboard</title>
-    <meta name="description" content="A bright, modern grocery dashboard.">
+    <meta name="description" content="A bright, modern smart shopping dashboard with categories, quantities, due dates, and more.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,63 +27,52 @@
                 </div>
                 <div>
                     <h1>Grocery Bud</h1>
-                    <p class="tagline">Shopping dashboard</p>
+                    <p class="tagline">Smart shopping dashboard</p>
                 </div>
             </div>
-            <div class="date-chip" id="dateChip">—</div>
+            <div class="top-actions">
+                <div class="date-chip" id="dateChip">—</div>
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                    <span class="sun">☀️</span>
+                    <span class="moon">🌙</span>
+                </button>
+            </div>
         </header>
 
         <section class="stats" aria-label="Summary">
             <div class="stat-card">
-                <div class="stat-icon ic-total">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
-                </div>
-                <div>
-                    <span class="stat-label">Total items</span>
-                    <span class="stat-value" id="statTotal">0</span>
-                </div>
+                <div class="stat-icon ic-total"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg></div>
+                <div><span class="stat-label">Total items</span><span class="stat-value" id="statTotal">0</span></div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon ic-active">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
-                </div>
-                <div>
-                    <span class="stat-label">Active</span>
-                    <span class="stat-value" id="statActive">0</span>
-                </div>
+                <div class="stat-icon ic-active"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg></div>
+                <div><span class="stat-label">Active</span><span class="stat-value" id="statActive">0</span></div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon ic-done">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                </div>
-                <div>
-                    <span class="stat-label">Completed</span>
-                    <span class="stat-value" id="statDone">0</span>
-                </div>
+                <div class="stat-icon ic-done"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+                <div><span class="stat-label">Completed</span><span class="stat-value" id="statDone">0</span></div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon ic-progress">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12A10 10 0 1 1 12 2"/><path d="M12 6v6l4 2"/></svg>
-                </div>
-                <div>
-                    <span class="stat-label">Progress</span>
-                    <span class="stat-value" id="statProgress">0%</span>
-                </div>
+                <div class="stat-icon ic-progress"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12A10 10 0 1 1 12 2"/><path d="M12 6v6l4 2"/></svg></div>
+                <div><span class="stat-label">Progress</span><span class="stat-value" id="statProgress">0%</span></div>
             </div>
         </section>
 
-        <div class="dash-progress" aria-hidden="true">
-            <div class="dash-progress-bar" id="progressBar"></div>
-        </div>
+        <div class="dash-progress" aria-hidden="true"><div class="dash-progress-bar" id="progressBar"></div></div>
 
         <main class="panel" role="main" aria-label="Grocery list">
+
             <form class="input-container" id="form" autocomplete="off">
-                <input type="text" id="input-box" placeholder="Add an item… (e.g. eggs)" aria-label="New item">
+                <input type="text" id="input-box" placeholder="Add an item… (e.g. 2 dozen eggs)" aria-label="New item">
                 <button type="submit" id="submit" aria-label="Add item">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                     <span>Add</span>
                 </button>
             </form>
+            <div class="suggestion-row" id="suggestionRow" hidden>
+                <span class="suggestion-label">Suggest:</span>
+                <div class="suggestion-chips" id="suggestionChips"></div>
+            </div>
 
             <div class="toolbar" id="toolbar" hidden>
                 <input type="text" id="search-box" placeholder="Search items…" aria-label="Search items">
@@ -91,6 +80,29 @@
                     <button type="button" class="filter-btn active" data-filter="all">All</button>
                     <button type="button" class="filter-btn" data-filter="active">Active</button>
                     <button type="button" class="filter-btn" data-filter="done">Done</button>
+                </div>
+            </div>
+
+            <div class="action-row" id="actionRow" hidden>
+                <button type="button" class="action-btn" id="undoBtn" disabled>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg>
+                    Undo
+                </button>
+                <button type="button" class="action-btn" id="redoBtn" disabled>
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg>
+                    Redo
+                </button>
+                <span class="action-spacer"></span>
+                <div class="share-menu">
+                    <button type="button" class="action-btn" id="shareBtn" title="Export / share list">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+                        Share
+                    </button>
+                    <div class="share-dropdown" id="shareDropdown" hidden>
+                        <button type="button" data-share="copy">📋 Copy to clipboard</button>
+                        <button type="button" data-share="txt">⬇️ Download .txt</button>
+                        <button type="button" data-share="json">💾 Download .json backup</button>
+                    </div>
                 </div>
             </div>
 
@@ -111,11 +123,12 @@
 
         <div class="undo-bar" id="undoBar" hidden>
             <span id="undoText">Item removed</span>
-            <button type="button" id="undoBtn">Undo</button>
+            <button type="button" id="undoQuick">Undo</button>
         </div>
 
     </div>
 
+    <input type="date" id="hiddenDatePicker" hidden>
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <script src="cart.js"></script>
