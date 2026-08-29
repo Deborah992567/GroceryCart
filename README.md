@@ -52,8 +52,10 @@ python3 -m http.server 8080
 | Undo | Tap **Undo** in the toast/bar, or use the Undo button |
 | Redo | Use the Redo button after undoing |
 | Filter / search | Use the toolbar above the list |
-| Export / share | Use the **Share** button in the toolbar |
+| Export / share | Use the **Share** button in the toolbar (opens a menu) |
 | Dark mode | Toggle the moon/sun icon in the header |
+
+> **Share / export menu** (Copy, Download .txt, Download .json) opens *upward* so it never covers your items — and it auto-closes when you click outside or press `Esc`. Copy falls back automatically if the Clipboard API isn't available.
 
 ---
 

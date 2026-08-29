@@ -518,43 +518,87 @@
   }
 
   /* ---------- Share / export ---------- */
+  const shareMenu = document.querySelector('.share-menu');
+
+  function buildShareText() {
+    if (!items.length) return 'My Grocery Bud list is empty.';
+    return items.map((it, i) => {
+      let line = `${i + 1}. ${it.text}`;
+      if (it.qty) line += it.unit && it.unit !== 'pcs' ? ` — ${it.qty} ${it.unit}` : ` — x${it.qty}`;
+      if (it.due) line += ` (due ${formatDue(it.due)})`;
+      if (it.done) line += ' ✓';
+      return line;
+    }).join('\n');
+  }
+
   shareBtn.addEventListener('click', (e) => {
+    e.preventDefault();
     e.stopPropagation();
     shareDropdown.hidden = !shareDropdown.hidden;
   });
-  document.addEventListener('click', () => { shareDropdown.hidden = true; });
-  shareDropdown.addEventListener('click', (e) => e.stopPropagation());
+
+  document.addEventListener('click', (e) => {
+    if (shareMenu && !shareMenu.contains(e.target)) {
+      shareDropdown.hidden = true;
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') shareDropdown.hidden = true;
+  });
+
   document.querySelectorAll('[data-share]').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       const kind = btn.dataset.share;
       if (kind === 'copy') {
-        const text = items.map((it, i) => `${i + 1}. ${it.text}${it.qty ? ' — ' + it.qty + (it.unit && it.unit !== 'pcs' ? ' ' + it.unit : '') : ''}${it.due ? ' (due ' + formatDue(it.due) + ')' : ''}${it.done ? ' ✓' : ''}`).join('\n') || 'My list is empty.';
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard')).catch(() => { fallbackCopy(text); });
-        } else { fallbackCopy(text); }
+        copyText(buildShareText());
       } else if (kind === 'txt') {
-        const text = 'Grocery Bud — ' + new Date().toLocaleDateString() + '\n\n' + items.map((it, i) => `${i + 1}. ${it.text}${it.qty ? ' (x' + it.qty + ')' : ''}${it.due ? ' [due ' + formatDue(it.due) + ']' : ''}${it.done ? ' ✓' : ''}`).join('\n') || 'Empty list';
-        download(text, 'grocery-bud-list.txt', 'text/plain');
+        const header = 'Grocery Bud — ' + new Date().toLocaleDateString() + '\n\n';
+        triggerDownload(header + buildShareText() + '\n', 'grocery-bud-list.txt', 'text/plain');
       } else if (kind === 'json') {
-        download(JSON.stringify({ exported: new Date().toISOString(), items }, null, 2), 'grocery-bud-backup.json', 'application/json');
+        const payload = JSON.stringify({ exported: new Date().toISOString(), items }, null, 2);
+        triggerDownload(payload, 'grocery-bud-backup.json', 'application/json');
       }
       shareDropdown.hidden = true;
     });
   });
-  function fallbackCopy(text) {
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); showToast('Copied to clipboard'); } catch (e) { showToast('Could not copy', 'error'); }
-    ta.remove();
+
+  function copyText(text) {
+    const done = () => showToast('Copied to clipboard');
+    const fail = () => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand('copy');
+        ta.remove();
+        ok ? done() : showToast('Could not copy', 'error');
+      } catch (err) {
+        showToast('Could not copy', 'error');
+      }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done).catch(fail);
+    } else {
+      fail();
+    }
   }
-  function download(content, filename, mime) {
+
+  function triggerDownload(content, filename, mime) {
     const blob = new Blob([content], { type: mime + ';charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = filename;
-    document.body.appendChild(a); a.click(); a.remove();
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('Downloading ' + filename);
   }
 
   /* ---------- Confetti ---------- */
