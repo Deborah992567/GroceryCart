@@ -12,12 +12,16 @@
   const emptyState = document.getElementById('emptyState');
   const clearBtn = document.getElementById('clear-items');
   const clearCount = document.getElementById('clearCount');
-  const scene = document.getElementById('scene');
-  const card = document.querySelector('.card');
   const toast = document.getElementById('toast');
   const undoBar = document.getElementById('undoBar');
   const undoText = document.getElementById('undoText');
   const undoBtn = document.getElementById('undoBtn');
+  const statTotal = document.getElementById('statTotal');
+  const statActive = document.getElementById('statActive');
+  const statDone = document.getElementById('statDone');
+  const statProgress = document.getElementById('statProgress');
+  const progressBar = document.getElementById('progressBar');
+  const dateChip = document.getElementById('dateChip');
 
   const ICONS = {
     check: `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>`,
@@ -86,6 +90,13 @@
     const doneCount = items.filter(it => it.done).length;
     clearBtn.disabled = doneCount === 0;
     clearCount.textContent = doneCount > 0 ? `(${doneCount})` : '';
+
+    const percent = count === 0 ? 0 : Math.round((doneCount / count) * 100);
+    statTotal.textContent = count;
+    statActive.textContent = remaining;
+    statDone.textContent = doneCount;
+    statProgress.textContent = percent + '%';
+    progressBar.style.width = percent + '%';
   }
 
   function createRow(item) {
@@ -260,28 +271,14 @@
     });
   });
 
-  /* ---------- 3D tilt ---------- */
-  let raf = false, px = 0, py = 0;
-  document.addEventListener('mousemove', (e) => {
-    px = e.clientX; py = e.clientY;
-    if (raf) return;
-    raf = requestAnimationFrame(() => {
-      raf = false;
-      const r = card.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const ry = ((px - cx) / r.width) * 12;
-      const rx = ((cy - py) / r.height) * 12;
-      scene.style.transform = `rotateY(${ry}deg) rotateX(${rx}deg)`;
-    });
-  });
-  card.addEventListener('mouseleave', () => {
-    scene.style.transition = 'transform 0.5s ease';
-    scene.style.transform = 'rotateY(0deg) rotateX(0deg)';
-    setTimeout(() => (scene.style.transition = 'transform 0.15s ease-out'), 500);
-  });
+  /* ---------- Date chip ---------- */
+  function updateDate() {
+    const d = new Date();
+    dateChip.textContent = d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+  }
 
   /* ---------- Init ---------- */
   load();
   render();
+  updateDate();
 })();

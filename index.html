@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grocery Bud — Your Smart Shopping List</title>
-    <meta name="description" content="A polished, 3D grocery shopping list you'll actually enjoy using.">
+    <title>Grocery Bud — Dashboard</title>
+    <meta name="description" content="A bright, modern grocery dashboard.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,28 +12,71 @@
 </head>
 <body>
 
-    <div class="bg-orbs" aria-hidden="true">
-        <span class="orb orb-1"></span>
-        <span class="orb orb-2"></span>
-        <span class="orb orb-3"></span>
+    <div class="bg-decor" aria-hidden="true">
+        <span class="blob blob-1"></span>
+        <span class="blob blob-2"></span>
+        <span class="grid-overlay"></span>
     </div>
 
-    <div class="scene" id="scene">
-        <main class="card" role="main" aria-label="Grocery list">
+    <div class="dashboard">
 
-            <header class="header">
-                <div class="icon-3d" id="brandIcon" aria-hidden="true">
-                    <span class="face face-front">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
-                    </span>
-                    <span class="face face-bottom">
-                        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
-                    </span>
+        <header class="dash-top">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 7H6"/></svg>
                 </div>
-                <h1>Grocery Bud</h1>
-                <p class="subtitle">A smarter way to shop</p>
-            </header>
+                <div>
+                    <h1>Grocery Bud</h1>
+                    <p class="tagline">Shopping dashboard</p>
+                </div>
+            </div>
+            <div class="date-chip" id="dateChip">—</div>
+        </header>
 
+        <section class="stats" aria-label="Summary">
+            <div class="stat-card">
+                <div class="stat-icon ic-total">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>
+                </div>
+                <div>
+                    <span class="stat-label">Total items</span>
+                    <span class="stat-value" id="statTotal">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon ic-active">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>
+                </div>
+                <div>
+                    <span class="stat-label">Active</span>
+                    <span class="stat-value" id="statActive">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon ic-done">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                </div>
+                <div>
+                    <span class="stat-label">Completed</span>
+                    <span class="stat-value" id="statDone">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon ic-progress">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12A10 10 0 1 1 12 2"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <div>
+                    <span class="stat-label">Progress</span>
+                    <span class="stat-value" id="statProgress">0%</span>
+                </div>
+            </div>
+        </section>
+
+        <div class="dash-progress" aria-hidden="true">
+            <div class="dash-progress-bar" id="progressBar"></div>
+        </div>
+
+        <main class="panel" role="main" aria-label="Grocery list">
             <form class="input-container" id="form" autocomplete="off">
                 <input type="text" id="input-box" placeholder="Add an item… (e.g. eggs)" aria-label="New item">
                 <button type="submit" id="submit" aria-label="Add item">
@@ -53,24 +96,24 @@
 
             <section class="list-section">
                 <div class="empty-state" id="emptyState">
-                    <svg viewBox="0 0 24 24" width="42" height="42" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
                     <p>Your list is empty</p>
                     <span>Add something to get started</span>
                 </div>
                 <ul id="List"></ul>
             </section>
-
-            <footer class="footer">
-                <div class="counter" id="counter" aria-live="polite">0 items</div>
-                <button type="button" id="clear-items" class="clear-btn">Clear completed <span id="clearCount"></span></button>
-            </footer>
-
-            <div class="undo-bar" id="undoBar" hidden>
-                <span id="undoText">Item removed</span>
-                <button type="button" id="undoBtn">Undo</button>
-            </div>
-
         </main>
+
+        <footer class="footer">
+            <div class="counter" id="counter">0 items</div>
+            <button type="button" id="clear-items" class="clear-btn">Clear completed <span id="clearCount"></span></button>
+        </footer>
+
+        <div class="undo-bar" id="undoBar" hidden>
+            <span id="undoText">Item removed</span>
+            <button type="button" id="undoBtn">Undo</button>
+        </div>
+
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
