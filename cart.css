@@ -248,6 +248,13 @@ li.done .item-check { background: var(--green); border-color: var(--green); colo
 .toast.success { background: var(--green); }
 .toast.error { background: var(--red); }
 
+/* ---------- Confetti ---------- */
+.confetti {
+  position: fixed; z-index: 100; pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 640px) {
   body { padding: 24px 12px 40px; }

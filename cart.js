@@ -58,6 +58,47 @@
     showToast._t = setTimeout(() => toast.classList.remove('show'), 1800);
   }
 
+  /* ---------- Confetti ---------- */
+  const CONFETTI_COLORS = ['#2f80ed', '#5b7cfa', '#23b26d', '#f5a623', '#56a0f5', '#7c6cf0', '#ef5b5b', '#8fb9f7'];
+
+  function confettiBurst(originEl) {
+    const origin = originEl.getBoundingClientRect();
+    const ox = origin.left + origin.width / 2;
+    const oy = origin.top + origin.height / 2;
+
+    for (let b = 0; b < 3; b++) {
+      const count = 26;
+      const pieces = [];
+      for (let i = 0; i < count; i++) {
+        const el = document.createElement('span');
+        el.className = 'confetti';
+        const color = CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0];
+        const size = 6 + Math.random() * 8;
+        const round = Math.random() > 0.5;
+        el.style.cssText = `left:${ox}px;top:${oy}px;width:${size}px;height:${size}px;background:${color};border-radius:${round ? '50%' : '2px'}`;
+        pieces.push({ el, x: ox, y: oy });
+        document.body.appendChild(el);
+      }
+
+      setTimeout(() => {
+        pieces.forEach((p, i) => {
+          const angle = (i / count) * Math.PI * 2 + (Math.random() * 0.6 - 0.3);
+          const dist = 90 + Math.random() * 140;
+          const tx = Math.cos(angle) * dist;
+          const ty = Math.sin(angle) * dist - 30;
+          const rot = (Math.random() * 720 - 360).toFixed(0);
+          p.el.style.transition = 'transform .9s cubic-bezier(.22,1,.36,1), opacity .9s ease';
+          requestAnimationFrame(() => {
+            p.el.style.transform = `translate(${tx}px,${ty}px) rotate(${rot}deg)`;
+            p.el.style.opacity = '0';
+          });
+        });
+      }, b * 120);
+
+      setTimeout(() => pieces.forEach(p => p.el.remove()), 1600 + b * 120);
+    }
+  }
+
   function visibleItems() {
     const q = query.trim().toLowerCase();
     return items.filter(it => {
@@ -109,10 +150,13 @@
     check.className = 'item-check';
     check.setAttribute('aria-label', 'Toggle done');
     check.innerHTML = ICONS.check;
-    check.addEventListener('click', () => {
+    check.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const becomingDone = !item.done;
       item.done = !item.done;
       save();
       render();
+      if (becomingDone) confettiBurst(e.currentTarget);
     });
 
     const text = document.createElement('span');
